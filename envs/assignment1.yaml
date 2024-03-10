@@ -1,0 +1,9 @@
+channels:
+  - conda-forge
+dependencies:
+  - python = 3.12
+  - jupyterlab = 4.1.4
+  - seaborn = 0.13.2
+  - scikit-learn = 1.4.1
+  - pandas = 2.2.1
+  - imbalanced-learn = 0.12.0

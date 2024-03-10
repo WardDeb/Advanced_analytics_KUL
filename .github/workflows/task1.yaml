@@ -1,0 +1,25 @@
+on:
+  push:
+
+defaults:
+  run:
+    shell: bash -l {0}
+
+jobs:
+  run_assignment1:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: mamba-org/setup-micromamba@main
+      with:
+        environment-file: envs/assignment1.yaml
+        cache-downloads: true
+        environment-name: advan1
+    - name: bookrun
+      run: |
+        micromamba activate advan1
+        jupyter execute assignment_1/Assignment1.ipynb
+    - uses: actions/upload-artifact@v3
+      with:
+        name: "assignment1"
+        path: "results/assignment1.tsv"

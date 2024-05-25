@@ -1,4 +1,4 @@
-# Advan
+# Advanced Analytics KUL
 Repository for KUL course advanced analytics in Business
 
 ## Overview

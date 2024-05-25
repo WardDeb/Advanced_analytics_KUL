@@ -6,12 +6,12 @@ Repository for KUL course advanced analytics in Business
 The input datasets can be found either datasets folder, or were to large to be included (assignment 2).
 A conda environment specifying all the packages and versions needed for the analyses per assignment can be found in the envs folder.
 
-Note that assignment 2 does not have a conda environment, instead the notebook are meant to be ran in a docker environment that is based on a (tensorflow-gpu-jupyter image)[https://hub.docker.com/r/tensorflow/tensorflow/tags].
+Note that assignment 2 does not have a conda environment, instead the notebook are meant to be ran in a docker environment that is based on a [tensorflow-gpu-jupyter image](https://hub.docker.com/r/tensorflow/tensorflow/tags).
 
- - assignment1: 
- - assignment2:  
- - assignment3: 
- - assignment4: 
+ - assignment1: Predictive modeling on tabular data  
+ - assignment2: Image regression using CNNs  
+ - assignment3: Streaming analytics on test data  
+ - assignment4: graph analytics on social network data  
 
 ## Example jupyter
 

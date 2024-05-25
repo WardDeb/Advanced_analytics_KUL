@@ -15,3 +15,6 @@ dependencies:
   - tqdm = 4.66.4
   - networkx = 3.3
   - scipy = 1.10.1
+  - pip
+  - pip:
+    - deep_translator

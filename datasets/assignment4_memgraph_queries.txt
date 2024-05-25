@@ -1,0 +1,82 @@
+LIST OF MAIN QUERIES USED TO COLLECT THE DATA FOR THE ANALYSIS (not exhaustive) :
+
+List of politicians
+
+MATCH (p:Party)<-[:MEMBER_OF]-(pol:User)
+RETURN DISTINCT pol.screen_name AS Politician, p.name AS Party
+ORDER BY pol.screen_name
+
+Activities of politicians
+
+MATCH (u:User)-[e]-(p:Party {ident: "MR"})
+OPTIONAL MATCH (p)<-[:MEMBER_OF]-(pol:User)-[:POSTED]->(t:Tweet)<-[r:Reply_TO]-(other:User)
+RETURN p, u, e, pol, t, r, other
+
+List of tweets replied by members of the party
+
+MATCH (p:Party {ident: "MR"})<-[:MEMBER_OF]-(member:User)
+MATCH (member)-[:POSTED]->(tweet:Tweet)
+OPTIONAL MATCH (tweet)<-[:POSTED]-(replier:User)
+RETURN p AS Party,
+       member AS PartyMember,
+       tweet AS Tweet,
+       collect(replier.screen_name) AS Responders
+
+Tweets per membmer of a party
+
+MATCH (p:Party {ident: "MR"})<-[:MEMBER_OF]-(member:User)-[:POSTED]->(tweet:Tweet)
+WHERE date(left(tweet.created_at, 10)) >= date('2013-01-01') AND
+      date(left(tweet.created_at, 10)) <= date('2020-12-31')
+RETURN member.screen_name AS Member, COUNT(tweet) AS TweetsCount
+ORDER BY TweetsCount DESC
+
+Tweets made by the party per dataclass
+
+MATCH (p:Party {ident: "N-VA"})<-[:MEMBER_OF]-(member:User)-[:POSTED]->(tweet:Tweet)
+WITH tweet,
+     CASE
+     WHEN tweet.created_at >= '2013-01-01' AND tweet.created_at < '2021-01-01' THEN '2013-2020'
+     WHEN tweet.created_at >= '2021-01-01' AND tweet.created_at < '2022-01-01' THEN '2021'
+     WHEN tweet.created_at >= '2022-01-01' AND tweet.created_at < '2023-01-01' THEN '2022'
+     WHEN tweet.created_at >= '2023-01-01' AND tweet.created_at < '2024-01-01' THEN '2023'
+     WHEN tweet.created_at >= '2024-01-01' AND tweet.created_at < '2024-02-01' THEN '2024/01'
+     WHEN tweet.created_at >= '2024-02-01' AND tweet.created_at < '2024-03-01' THEN '2024/02'
+     WHEN tweet.created_at >= '2024-03-01' AND tweet.created_at < '2024-04-01' THEN '2024/03'
+     WHEN tweet.created_at >= '2024-04-01' AND tweet.created_at < '2024-05-01' THEN '2024/04'
+     WHEN tweet.created_at >= '2024-05-01' THEN '2024/05'
+     ELSE 'Other'
+     END AS DateClass
+RETURN DateClass, COUNT(*) AS TweetsCount
+ORDER BY DateClass
+
+Tweets containing specific topics
+
+MATCH (p:Party)<-[:MEMBER_OF]-(member:User)-[r]-(tweet:Tweet)
+WHERE date(left(tweet.created_at, 10)) >= date(‘2019-01-01')
+SET tweet.subject = CASE
+ WHEN tweet.full_text =~ '.*belasting.*' OR tweet.full_text =~ '.*impôt.*' OR tweet.full_text =~ '.*taxes.*' THEN 'Taxes'
+ WHEN tweet.full_text =~ '.*immigratie.*' OR tweet.full_text =~ '.*immigration.*' THEN 'Immigration'
+ WHEN tweet.full_text =~ '.*milieubeleid.*' OR tweet.full_text =~ '.*politique environnementale.*' OR tweet.full_text =~ '.*environmental policy.*' THEN 'Environmental Policy'
+ WHEN tweet.full_text =~ '.*boeren.*' OR tweet.full_text =~ '.*agricole.*' OR tweet.full_text =~ '.*farmers.*' THEN 'Agricultural Policy'
+ WHEN tweet.full_text =~ '.*stikstofakkoord.*' OR tweet.full_text =~ '.*accord sur l\'azote.*' OR tweet.full_text =~ '.*nitrogen agreement.*' THEN 'Nitrogen Agreement'
+ WHEN tweet.full_text =~ '.*economi.*' THEN 'Economics'
+ WHEN tweet.full_text =~ '.*vrouwen.*' OR tweet.full_text =~ '.femme.*' OR tweet.full_text =~ '.feminism.*' OR tweet.full_text =~ '.women.*' THEN 'Feminism'
+ WHEN tweet.full_text =~ '.*crisis.*' OR tweet.full_text =~ '.crise.*' THEN 'Crisis'
+ WHEN tweet.full_text =~ '.*LGBT.*' THEN 'LGBT'
+ WHEN tweet.full_text =~ '.*Ukraine.*' OR tweet.full_text =~ '.Oekraine.*' OR tweet.full_text =~ '.Rusland.*' OR tweet.full_text =~ '.Russi.*' THEN 'Conflict Russia/Ukraine'
+ WHEN tweet.full_text =~ '.*Israel.*' OR tweet.full_text =~ '.Palestine.*' THEN 'Conflict Israel/Palestine'
+ ELSE 'Other'
+END
+RETURN tweet.ident AS ID, tweet.ident AS LABEL , p.ident AS PARTY, tweet.created_at AS timeset, tweet.subject AS SUBJECT
+
+Retrieve tweets that have been posted by or that mention a member
+
+MATCH (p:Party)<-[:MEMBER_OF]-(member:User)-[r]-(tweet:Tweet)
+WHERE date(left(tweet.created_at, 10)) >= date('2019-01-01')
+RETURN member.ident AS SOURCE, tweet.ident AS TARGET, type(r) AS TYPE, tweet.created_at AS timeset, tweet.quote_count AS QUOTE_NB, tweet.reply_count AS REPLY_NB
+
+Time evolution of the activity
+
+MATCH (p:Party)<-[:MEMBER_OF]-(member:User)-[r]-(tweet:Tweet)
+WHERE date(left(tweet.created_at, 10)) >= date('2019-01-01')
+RETURN member.ident AS SOURCE, tweet.ident AS TARGET, type(r) AS TYPE, tweet.created_at AS timeset, tweet.quote_count AS QUOTE_NB, tweet.reply_count AS REPLY_NB

@@ -1,0 +1,21 @@
+on:
+  push:
+  pull_request:
+
+defaults:
+  run:
+    shell: bash -l {0}
+
+jobs:
+  envs:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: mamba-org/setup-micromamba@main
+      with:
+        environment-file: envs/assignment3.yaml
+        cache-downloads: true
+        environment-name: advan3
+    - name: env1
+      run: |
+        micromamba activate advan3

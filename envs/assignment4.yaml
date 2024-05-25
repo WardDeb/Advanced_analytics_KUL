@@ -1,0 +1,17 @@
+channels:
+  - conda-forge
+dependencies:
+  - python = 3.11.9
+  - jupyterlab = 4.2.1
+  - seaborn = 0.13.2
+  - scikit-learn = 1.5.0
+  - pandas = 2.2.2
+  - nltk = 3.8.1
+  - plotly = 5.22.0
+  - wordcloud = 1.9.3
+  - gensim = 4.3.2
+  - squarify = 0.4.3
+  - spacy = 3.7.3
+  - tqdm = 4.66.4
+  - networkx = 3.3
+  - scipy = 1.10.1

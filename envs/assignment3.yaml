@@ -1,0 +1,10 @@
+channels:
+  - conda-forge
+dependencies:
+  - python = 3.12
+  - jupyterlab = 4.1.4
+  - seaborn = 0.13.2
+  - scikit-learn = 1.4.1
+  - pandas = 2.2.1
+  - pyspark = 3.5.1
+  - findspark = 2.0.1
